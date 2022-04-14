@@ -1,0 +1,40 @@
+package main
+
+import (
+	"fmt"
+
+	"github.com/gofiber/fiber/v2"
+)
+
+type Name struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+func postMethod(c *fiber.Ctx) error {
+	n := new(Name)
+
+	if err := c.BodyParser(n); err != nil {
+		return err
+	}
+	Aname := [4]string{"Jim", "John", "Jane", "Jack"}
+	Apass := [4]string{"12", "123", "1234", "12345"}
+	fmt.Println(n.Username)
+	fmt.Println(n.Password)
+	for i := 0; i < len(Aname) && i < len(Apass); i++ {
+		if Aname[i] == n.Username && Apass[i] == n.Password {
+			return nil
+		}
+
+	}
+	return c.SendStatus(fiber.StatusUnauthorized)
+}
+
+func main() {
+
+	app := fiber.New()
+	app.Post("/user", postMethod)
+
+	app.Listen(":8080")
+	app.HandlersCount()
+}
